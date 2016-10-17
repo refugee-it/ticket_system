@@ -93,7 +93,7 @@ if (is_array($tickets) === true)
                 (int)$ticket['status'] === TICKET_STATUS_NOT_PUBLIC)
             {
                 echo "            <div>\n".
-                    "              <a href=\"ticket_view.php?handle=".htmlspecialchars($ticket['handle'], ENT_COMPAT | ENT_HTML401, "UTF-8")."\">".htmlspecialchars($ticket['title'], ENT_COMPAT | ENT_HTML401, "UTF-8")."</a>\n".
+                    "              <a href=\"ticket_view.php?id=".htmlspecialchars($ticket['id'], ENT_COMPAT | ENT_HTML401, "UTF-8")."\">".htmlspecialchars($ticket['title'], ENT_COMPAT | ENT_HTML401, "UTF-8")."</a>\n".
                     "            </div>\n";
             }
         }
@@ -102,7 +102,7 @@ if (is_array($tickets) === true)
             if ((int)$ticket['status'] === TICKET_STATUS_PUBLIC)
             {
                 echo "            <div>\n".
-                    "              <a href=\"ticket_view.php?handle=".htmlspecialchars($ticket['handle'], ENT_COMPAT | ENT_HTML401, "UTF-8")."\">".htmlspecialchars($ticket['title'], ENT_COMPAT | ENT_HTML401, "UTF-8")."</a>\n".
+                    "              <a href=\"ticket_view.php?id=".htmlspecialchars($ticket['id'], ENT_COMPAT | ENT_HTML401, "UTF-8")."\">".htmlspecialchars($ticket['title'], ENT_COMPAT | ENT_HTML401, "UTF-8")."</a>\n".
                     "            </div>\n";
             }
         }

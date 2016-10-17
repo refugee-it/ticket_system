@@ -31,26 +31,26 @@ if (isset($_SESSION['user_id']) !== true)
     exit();
 }
 
-$ticketHandle = null;
+$id = null;
 
-if (isset($_POST['handle']) === true)
+if (isset($_POST['id']) === true)
 {
-    $ticketHandle = $_POST['handle'];
+    $id = (int)$_POST['id'];
 }
 
-if (isset($_GET['handle']) === true)
+if (isset($_GET['id']) === true)
 {
-    $ticketHandle = $_GET['handle'];
+    $id = (int)$_GET['id'];
 }
 
-if ($ticketHandle == null)
+if ($id == null)
 {
     exit();
 }
 
 require_once("./libraries/ticket_management.inc.php");
 
-$ticket = GetTicket($ticketHandle);
+$ticket = GetTicketById($id);
 
 if (is_array($ticket) !== true)
 {
@@ -107,7 +107,7 @@ if (isset($_POST['title']) === true &&
     isset($_POST['creatorphone']) === true &&
     isset($_POST['status']) === true)
 {
-    if (UpdateTicket($ticketHandle, $_POST['title'], $_POST['description'], $_POST['creatorname'], $_POST['creatoremail'], $_POST['creatorphone'], (int)$_POST['status']) === 0)
+    if (UpdateTicket($id, $_POST['title'], $_POST['description'], $_POST['creatorname'], $_POST['creatoremail'], $_POST['creatorphone'], (int)$_POST['status']) === 0)
     {
         $title = $_POST['title'];
         $description = $_POST['description'];
@@ -150,7 +150,7 @@ else
 }
 
 echo "                </select>\n".
-     "                <input type=\"hidden\" name=\"handle\" value=\"".htmlspecialchars($ticketHandle, ENT_COMPAT | ENT_HTML401, "UTF-8")."\"/>\n".
+     "                <input type=\"hidden\" name=\"id\" value=\"".$id."\"/>\n".
      "                <input type=\"submit\" value=\"".LANG_TICKETSAVEBUTTON."\"/>\n".
      "              </fieldset>\n".
      "            </form>\n";
@@ -159,7 +159,7 @@ if (isset($_POST['trash_images']) === true)
 {
     if (is_array($_POST['trash_images']) === true)
     {
-        TrashUploads($ticketHandle, $_POST['trash_images']);
+        TrashUploads($_POST['trash_images']);
 
         $trashCount = count($ticket['images']);
 
@@ -207,7 +207,7 @@ if (is_array($ticket['images']) === true)
     if ($imagesHTML != null)
     {
         $imagesHTML .= "                    <input type=\"submit\" value=\"".LANG_BUTTON_TRASH_SELECTED_IMAGES."\"/>\n".
-                       "                    <input type=\"hidden\" name=\"handle\" value=\"".htmlspecialchars($ticketHandle, ENT_COMPAT | ENT_HTML401, "UTF-8")."\"/>\n".
+                       "                    <input type=\"hidden\" name=\"id\" value=\"".$id."\"/>\n".
                        "                  </fieldset>\n".
                        "                </form>\n".
                        "              </div>\n";
@@ -221,7 +221,7 @@ if (is_array($ticket['images']) === true)
 
 echo "              <form action=\"ticket_view.php\" method=\"post\">\n".
      "                <fieldset>\n".
-     "                  <input type=\"hidden\" name=\"handle\" value=\"".htmlspecialchars($ticketHandle, ENT_COMPAT | ENT_HTML401, "UTF-8")."\"/>\n".
+     "                  <input type=\"hidden\" name=\"id\" value=\"".$id."\"/>\n".
      "                  <input type=\"submit\" value=\"".LANG_BUTTON_BACK."\"/><br/>\n".
      "                </fieldset>\n".
      "              </form>\n".

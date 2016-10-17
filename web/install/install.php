@@ -492,7 +492,6 @@ else if ($step == 3)
 
                 $sql .= "`".Database::Get()->GetPrefix()."tickets` (".
                         "  `id` int(11) NOT NULL AUTO_INCREMENT,".
-                        "  `handle` varchar(255) COLLATE utf8_bin NOT NULL,".
                         "  `title` varchar(255) COLLATE utf8_bin NOT NULL,".
                         "  `description` text COLLATE utf8_bin NOT NULL,".
                         "  `creator_name` varchar(255) COLLATE utf8_bin NOT NULL,".
@@ -500,9 +499,9 @@ else if ($step == 3)
                         "  `creator_phone` varchar(255) COLLATE utf8_bin NOT NULL,".
                         "  `status` int(11) NOT NULL,".
                         "  `datetime_created` datetime NOT NULL,".
+                        "  `handle` varchar(255) COLLATE utf8_bin,".
                         "  `id_user` int(11) NOT NULL,".
-                        "  PRIMARY KEY (`id`),".
-                        "  UNIQUE KEY `handle` (`handle`)".
+                        "  PRIMARY KEY (`id`)".
                         ") ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin";
 
                 if (Database::Get()->ExecuteUnsecure($sql) !== true)
@@ -538,7 +537,7 @@ else if ($step == 3)
                         "  `display_name` varchar(255) COLLATE utf8_bin NOT NULL,".
                         "  `internal_name` varchar(255) COLLATE utf8_bin NOT NULL,".
                         "  `status` int(11) NOT NULL,".
-                        "  `ticket_handle` varchar(255) COLLATE utf8_bin NOT NULL,".
+                        "  `ticket_id` int(11) NOT NULL,".
                         "  PRIMARY KEY (`id`),".
                         "  UNIQUE KEY `internal_name` (`internal_name`)".
                         ") ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin";

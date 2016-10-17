@@ -46,12 +46,19 @@ if ($ticketHandle == null)
     exit();
 }
 
+require_once("./libraries/ticket_management.inc.php");
 
+$ticket = GetTicketByHandle($ticketHandle);
+
+if (is_array($ticket) != true)
+{
+    exit();
+}
+
+$images = $ticket['images'];
 
 require_once("./libraries/languagelib.inc.php");
 require_once(getLanguageFile("ticket_upload"));
-
-require_once("./libraries/ticket_management.inc.php");
 
 echo "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n".
      "<!DOCTYPE html\n".
@@ -70,8 +77,39 @@ echo "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n".
      "          <div class=\"mainbox_header\">\n".
      "            <h1 class=\"mainbox_header_h1\">".LANG_HEADER."</h1>\n".
      "          </div>\n".
-     "          <div class=\"mainbox_body\">\n".
-     "            <p>\n".
+     "          <div class=\"mainbox_body\">\n";
+
+if (isset($_POST['upload_done']) === true)
+{
+    if (RemoveTicketHandle($ticketHandle) === 0)
+    {
+        echo "            <p>\n".
+             "              ".LANG_UPLOAD_THANK_YOU."\n".
+             "            </p>\n".
+             "            <form action=\"index.php\" method=\"post\">\n".
+             "              <fieldset>\n".
+             "                <input type=\"submit\" value=\"".LANG_UPLOAD_DONE."\"/>\n".
+             "              </fieldset>\n".
+             "            </form>\n".
+             "          </div>\n".
+             "        </div>\n".
+             "        <div class=\"footerbox\">\n".
+             "          <a href=\"license.php\" class=\"footerbox_link\">".LANG_LICENSE."</a>\n".
+             "        </div>\n".
+             "    </body>\n".
+             "</html>\n";
+
+            exit(0);
+    }
+    else
+    {
+        echo "            <p>\n".
+             "              <span class=\"error\">".LANG_UPLOAD_GENERAL_ERROR."</span>\n".
+             "            </p>\n";
+    }
+}
+
+echo "            <p>\n".
      "              ".LANG_UPLOAD_DESCRIPTION."\n".
      "            </p>\n";
 
@@ -129,11 +167,13 @@ if (isset($_POST['upload']) === true)
 
     if ($success === true)
     {
-        $result = AttachUpload($ticketHandle, $_FILES['file']['name'], $internalName);
+        $result = AttachUpload($ticket['id'], $_FILES['file']['name'], $internalName);
     }
 
     if ($success === true)
     {
+        $images[] = array('internal_name' => $internalName, 'display_name' => $_FILES['file']['name']);
+
         echo "            <p>\n".
              "              <span class=\"success\">".LANG_UPLOAD_SUCCESS."</span>\n".
              "            </p>\n";
@@ -148,29 +188,25 @@ echo "            <form enctype=\"multipart/form-data\" action=\"ticket_upload.p
      "              </fieldset>\n".
      "            </form>\n";
 
-$images = GetUploads($ticketHandle);
-
-if (is_array($images) === true)
+if (count($images) > 0)
 {
-    if (count($images) > 0)
+    foreach ($images as $image)
     {
-        foreach ($images as $image)
-        {
-            echo "            <div>\n".
-                 "              <p>\n".
-                 "                ".htmlspecialchars($image['display_name'], ENT_COMPAT | ENT_HTML401, "UTF-8").":\n".
-                 "              </p>\n".
-                 "              <a href=\"./uploads/images/".htmlspecialchars($image['internal_name'], ENT_COMPAT | ENT_HTML401, "UTF-8")."\" target=\"_blank\">\n".
-                 "                <img class=\"image_preview\" src=\"./uploads/images/".htmlspecialchars($image['internal_name'], ENT_COMPAT | ENT_HTML401, "UTF-8")."\"/>\n".
-                 "              </a>\n".
-                 "            </div>\n";
-        }
+        echo "            <div>\n".
+             "              <p>\n".
+             "                ".htmlspecialchars($image['display_name'], ENT_COMPAT | ENT_HTML401, "UTF-8").":\n".
+             "              </p>\n".
+             "              <a href=\"./uploads/images/".htmlspecialchars($image['internal_name'], ENT_COMPAT | ENT_HTML401, "UTF-8")."\" target=\"_blank\">\n".
+             "                <img class=\"image_preview\" src=\"./uploads/images/".htmlspecialchars($image['internal_name'], ENT_COMPAT | ENT_HTML401, "UTF-8")."\"/>\n".
+             "              </a>\n".
+             "            </div>\n";
     }
 }
 
-echo "            <form action=\"index.php\" method=\"post\">\n".
+echo "            <form action=\"ticket_upload.php\" method=\"post\">\n".
      "              <fieldset>\n".
-     "                <input type=\"submit\" value=\"".LANG_UPLOAD_DONE."\"/>\n".
+     "                <input type=\"submit\" name=\"upload_done\" value=\"".LANG_UPLOAD_DONE."\"/>\n".
+     "                <input type=\"hidden\" name=\"ticket_handle\" value=\"".htmlspecialchars($ticketHandle, ENT_COMPAT | ENT_HTML401, "UTF-8")."\"/>\n".
      "              </fieldset>\n".
      "            </form>\n".
      "          </div>\n".

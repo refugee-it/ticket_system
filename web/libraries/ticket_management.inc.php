@@ -109,7 +109,7 @@ function AddNewTicket($title,
     return -4;
 }
 
-function UpdateTicket($ticketHandle, $title, $description, $creatorName, $creatorEMail, $creatorPhone, $status)
+function UpdateTicket($id, $title, $description, $creatorName, $creatorEMail, $creatorPhone, $status)
 {
     /** @todo Check for empty parameters. */
 
@@ -132,9 +132,9 @@ function UpdateTicket($ticketHandle, $title, $description, $creatorName, $creato
                                         "    `creator_e_mail`=?,\n".
                                         "    `creator_phone`=?,\n".
                                         "    `status`=?\n".
-                                        "WHERE `handle` LIKE ?\n",
-                                        array($title, $description, $creatorName, $creatorEMail, $creatorPhone, $status, $ticketHandle),
-                                        array(Database::TYPE_STRING, Database::TYPE_STRING, Database::TYPE_STRING, Database::TYPE_STRING, Database::TYPE_STRING, Database::TYPE_STRING, Database::TYPE_INT));
+                                        "WHERE `id`=?\n",
+                                        array($title, $description, $creatorName, $creatorEMail, $creatorPhone, $status, $id),
+                                        array(Database::TYPE_STRING, Database::TYPE_STRING, Database::TYPE_STRING, Database::TYPE_STRING, Database::TYPE_STRING, Database::TYPE_INT, Database::TYPE_INT));
 
     if ($result === true)
     {
@@ -146,7 +146,32 @@ function UpdateTicket($ticketHandle, $title, $description, $creatorName, $creato
     }
 }
 
-function AttachUpload($handleTicket, $displayName, $internalName)
+function RemoveTicketHandle($ticketHandle)
+{
+    /** @todo Check for empty parameters. */
+
+    if (Database::Get()->IsConnected() !== true)
+    {
+        return -1;
+    }
+
+    $result = Database::Get()->Execute("UPDATE `".Database::Get()->GetPrefix()."tickets`\n".
+                                       "SET `handle`=?\n".
+                                       "WHERE `handle` LIKE ?",
+                                       array(NULL, $ticketHandle),
+                                       array(Database::TYPE_NULL, Database::TYPE_STRING));
+
+    if ($result === true)
+    {
+        return 0;
+    }
+    else
+    {
+        return -1;
+    }
+}
+
+function AttachUpload($ticketId, $displayName, $internalName)
 {
     /** @todo Check for empty parameters. */
 
@@ -164,10 +189,10 @@ function AttachUpload($handleTicket, $displayName, $internalName)
                                   "    `display_name`,\n".
                                   "    `internal_name`,\n".
                                   "    `status`,\n".
-                                  "    `ticket_handle`)\n".
+                                  "    `ticket_id`)\n".
                                   "VALUES (?, ?, ?, ?, ?)\n",
-                                  array(NULL, $displayName, $internalName, TICKET_UPLOAD_STATUS_NOT_PUBLIC, $handleTicket),
-                                  array(Database::TYPE_NULL, Database::TYPE_STRING, Database::TYPE_STRING, Database::TYPE_INT, Database::TYPE_STRING));
+                                  array(NULL, $displayName, $internalName, TICKET_UPLOAD_STATUS_NOT_PUBLIC, $ticketId),
+                                  array(Database::TYPE_NULL, Database::TYPE_STRING, Database::TYPE_STRING, Database::TYPE_INT, Database::TYPE_INT));
 
     if ($id <= 0)
     {
@@ -184,7 +209,7 @@ function AttachUpload($handleTicket, $displayName, $internalName)
     return -4;
 }
 
-function TrashUploads($handleTicket, array $handleUploads)
+function TrashUploads(array $handleUploads)
 {
     /** @todo Check for empty parameters. */
 
@@ -228,7 +253,7 @@ function TrashUploads($handleTicket, array $handleUploads)
     }
 }
 
-function GetUploads($handleTicket)
+function GetUploads($ticketId)
 {
     /** @todo Check for empty parameters. */
 
@@ -242,9 +267,9 @@ function GetUploads($handleTicket)
                                       "    `internal_name`,\n".
                                       "    `status`\n".
                                       "FROM `".Database::Get()->GetPrefix()."uploaded_images`\n".
-                                      "WHERE `ticket_handle` LIKE ?\n",
+                                      "WHERE `ticket_id`=?\n",
                                       array($handleTicket),
-                                      array(Database::TYPE_STRING));   
+                                      array(Database::TYPE_INT));
 
     if (is_array($uploads) !== true)
     {
@@ -296,7 +321,7 @@ function GetTickets($userId)
     return $tickets;
 }
 
-function GetTicket($ticketHandle)
+function GetTicketById($id)
 {
     /** @todo Check for empty parameters. */
 
@@ -306,6 +331,69 @@ function GetTicket($ticketHandle)
     }
 
     $ticket = Database::Get()->Query("SELECT `title`,\n".
+                                     "    `description`,\n".
+                                     "    `creator_name`,\n".
+                                     "    `creator_e_mail`,\n".
+                                     "    `creator_phone`,\n".
+                                     "    `status`,\n".
+                                     "    `datetime_created`,\n".
+                                     "    `handle`,\n".
+                                     "    `id_user`\n".
+                                     "FROM `".Database::Get()->GetPrefix()."tickets`\n".
+                                     "WHERE `id`=?\n",
+                                     array($id),
+                                     array(Database::TYPE_INT));
+
+    if (is_array($ticket) !== true)
+    {
+        return null;
+    }
+
+    if (count($ticket) <= 0)
+    {
+        return null;
+    }
+
+    $ticket = $ticket[0];
+
+    $images = Database::Get()->Query("SELECT `display_name`,\n".
+                                     "    `internal_name`,\n".
+                                     "    `status`\n".
+                                     "FROM `".Database::Get()->GetPrefix()."uploaded_images`\n".
+                                     "WHERE `ticket_id`=?\n",
+                                     array($id),
+                                     array(Database::TYPE_INT));
+
+    if (is_array($images) === true)
+    {
+        if (count($images) > 0)
+        {
+            $ticket['images'] = $images;
+        }
+        else
+        {
+            $ticket['images'] = null;
+        }
+    }
+    else
+    {
+        $ticket['images'] = null;
+    }
+
+    return $ticket;
+}
+
+function GetTicketByHandle($ticketHandle)
+{
+    /** @todo Check for empty parameters. */
+
+    if (Database::Get()->IsConnected() !== true)
+    {
+        return -1;
+    }
+
+    $ticket = Database::Get()->Query("SELECT `id`,\n".
+                                     "    `title`,\n".
                                      "    `description`,\n".
                                      "    `creator_name`,\n".
                                      "    `creator_e_mail`,\n".
@@ -331,12 +419,12 @@ function GetTicket($ticketHandle)
     $ticket = $ticket[0];
 
     $images = Database::Get()->Query("SELECT `display_name`,\n".
-                                        "    `internal_name`,\n".
-                                        "    `status`\n".
-                                        "FROM `".Database::Get()->GetPrefix()."uploaded_images`\n".
-                                        "WHERE `ticket_handle` LIKE ?\n",
-                                        array($ticketHandle),
-                                        array(Database::TYPE_STRING));
+                                     "    `internal_name`,\n".
+                                     "    `status`\n".
+                                     "FROM `".Database::Get()->GetPrefix()."uploaded_images`\n".
+                                     "WHERE `ticket_id`=?\n",
+                                     array($ticket['id']),
+                                     array(Database::TYPE_INT));
 
     if (is_array($images) === true)
     {
@@ -356,6 +444,7 @@ function GetTicket($ticketHandle)
 
     return $ticket;
 }
+
 
 
 

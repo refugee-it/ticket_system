@@ -38,6 +38,7 @@ define("LANG_UPLOAD_FILESIZE_ERROR_POST", " bytes.");
 define("LANG_UPLOAD_CANT_SAVE", "Error: Can't internally store the uploaded file.");
 define("LANG_UPLOAD_SUCCESS", "File upload was successful.");
 define("LANG_UPLOAD_DONE", "Done");
+define("LANG_UPLOAD_THANK_YOU", "Thank you very much for creating this ticket! We will look into it as soon as possible.");
 define("LANG_LICENSE", "Licensing");
 
 

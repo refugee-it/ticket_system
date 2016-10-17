@@ -26,26 +26,26 @@
 
 session_start();
 
-$ticketHandle = null;
+$id = null;
 
-if (isset($_POST['handle']) === true)
+if (isset($_POST['id']) === true)
 {
-    $ticketHandle = $_POST['handle'];
+    $id = (int)$_POST['id'];
 }
 
-if (isset($_GET['handle']) === true)
+if (isset($_GET['id']) === true)
 {
-    $ticketHandle = $_GET['handle'];
+    $id = (int)$_GET['id'];
 }
 
-if ($ticketHandle == null)
+if ($id == null)
 {
     exit();
 }
 
 require_once("./libraries/ticket_management.inc.php");
 
-$ticket = GetTicket($ticketHandle);
+$ticket = GetTicketById($id);
 
 if (is_array($ticket) != true)
 {
@@ -173,7 +173,7 @@ if (isset($_SESSION['user_id']) === true)
     {
         echo "              <form action=\"ticket_edit.php\" method=\"post\">\n".
              "                <fieldset>\n".
-             "                  <input type=\"hidden\" name=\"handle\" value=\"".htmlspecialchars($ticketHandle, ENT_COMPAT | ENT_HTML401, "UTF-8")."\"/>\n".
+             "                  <input type=\"hidden\" name=\"id\" value=\"".$id."\"/>\n".
              "                  <input type=\"submit\" value=\"".LANG_BUTTON_EDIT."\"/><br/>\n".
              "                </fieldset>\n".
              "              </form>\n";
@@ -182,7 +182,7 @@ if (isset($_SESSION['user_id']) === true)
 
 echo "              <form action=\"tickets_list.php\" method=\"post\">\n".
      "                <fieldset>\n".
-     "                  <input type=\"hidden\" name=\"handle\" value=\"".htmlspecialchars($ticketHandle, ENT_COMPAT | ENT_HTML401, "UTF-8")."\"/>\n".
+     "                  <input type=\"hidden\" name=\"id\" value=\"".$id."\"/>\n".
      "                  <input type=\"submit\" value=\"".LANG_BUTTON_BACK."\"/><br/>\n".
      "                </fieldset>\n".
      "              </form>\n".

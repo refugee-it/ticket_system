@@ -38,6 +38,7 @@ define("LANG_UPLOAD_FILESIZE_ERROR_POST", " Bytes.");
 define("LANG_UPLOAD_CANT_SAVE", "Fehler: Die Datei konnte intern nicht abgelegt werden.");
 define("LANG_UPLOAD_SUCCESS", "Die Datei wurde erfolgreich hochgeladen.");
 define("LANG_UPLOAD_DONE", "Fertig");
+define("LANG_UPLOAD_THANK_YOU", "Vielen Dank für die Erstellung des Tickets! Wir werden uns so schnell wie möglich darum kümmern.");
 define("LANG_LICENSE", "Lizenzierung");
 
 
