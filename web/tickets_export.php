@@ -57,22 +57,26 @@ if (is_array($tickets) === true)
             if ($ticketsHTML == null)
             {
                 $ticketsHTML .= "          <table border=\"1\">\n".
-                                "            <tr>\n".
-                                "              <th>".LANG_COLUMN_TITLE."</th>\n".
-                                "              <th>".LANG_COLUMN_DESCRIPTION."</th>\n".
-                                "            </tr>\n";
+                                "            <thead>\n".
+                                "              <tr>\n".
+                                "                <th>".LANG_COLUMN_TITLE."</th>\n".
+                                "                <th>".LANG_COLUMN_DESCRIPTION."</th>\n".
+                                "              </tr>\n".
+                                "            </thead>\n".
+                                "            <tbody>\n";
             }
 
-            $ticketsHTML .= "            <tr>\n".
-                            "              <td>".htmlspecialchars($ticket['title'], ENT_COMPAT | ENT_HTML401, "UTF-8")."</td>\n".
-                            "              <td>".htmlspecialchars($ticket['description'], ENT_COMPAT | ENT_HTML401, "UTF-8")."</td>\n".
-                            "            </tr>\n";
+            $ticketsHTML .= "              <tr>\n".
+                            "                <td>".htmlspecialchars($ticket['title'], ENT_COMPAT | ENT_HTML401, "UTF-8")."</td>\n".
+                            "                <td>".htmlspecialchars($ticket['description'], ENT_COMPAT | ENT_HTML401, "UTF-8")."</td>\n".
+                            "              </tr>\n";
         }
     }
 
     if ($ticketsHTML !== null)
     {
-        $ticketsHTML .= "          </table>\n";
+        $ticketsHTML .= "            </tbody>\n".
+                        "          </table>\n";
         echo $ticketsHTML;
     }
 }

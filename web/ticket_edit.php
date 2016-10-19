@@ -28,6 +28,7 @@ session_start();
 
 if (isset($_SESSION['user_id']) !== true)
 {
+    header("HTTP/1.1 401 Unauthorized");
     exit();
 }
 
@@ -45,6 +46,7 @@ if (isset($_GET['id']) === true)
 
 if ($id == null)
 {
+    header("HTTP/1.1 404 Not Found");
     exit();
 }
 
@@ -54,12 +56,14 @@ $ticket = GetTicketById($id);
 
 if (is_array($ticket) !== true)
 {
+    header("HTTP/1.1 404 Not Found");
     exit();
 }
 
 if ((int)$_SESSION['user_id'] != (int)$ticket['id_user'] &&
     (int)$_SESSION['user_role'] !== USER_ROLE_ADMIN)
 {
+    header("HTTP/1.1 401 Unauthorized");
     exit();
 }
 
@@ -192,14 +196,16 @@ if (is_array($ticket['images']) === true)
                           "                  <fieldset>\n";
         }
 
+        $imageDisplayName = htmlspecialchars($image['display_name'], ENT_COMPAT | ENT_HTML401, "UTF-8");
+
         $imagesHTML .= "                    <div>\n".
                        "                      <input type=\"checkbox\" name=\"trash_images[]\" value=\"".htmlspecialchars($image['internal_name'], ENT_COMPAT | ENT_HTML401, "UTF-8")."\"/>\n".
-                       "                      <a href=\"./uploads/images/".htmlspecialchars($image['internal_name'], ENT_COMPAT | ENT_HTML401, "UTF-8")."\" target=\"_blank\">\n".
-                       "                        <img class=\"image_preview\" src=\"./uploads/images/".htmlspecialchars($image['internal_name'], ENT_COMPAT | ENT_HTML401, "UTF-8")."\"/>\n".
+                       "                      <a href=\"./uploads/images/".htmlspecialchars($image['internal_name'], ENT_COMPAT | ENT_HTML401, "UTF-8")."\">\n".
+                       "                        <img class=\"image_preview\" src=\"./uploads/images/".htmlspecialchars($image['internal_name'], ENT_COMPAT | ENT_HTML401, "UTF-8")."\" alt=\"".$imageDisplayName."\"/>\n".
                        "                      </a>\n".
                        "                      <br/>\n".
                        "                      <span>\n".
-                       "                        ".htmlspecialchars($image['display_name'], ENT_COMPAT | ENT_HTML401, "UTF-8")."\n".
+                       "                        ".$imageDisplayName."\n".
                        "                      </span>\n".
                        "                    </div>\n";
     }
