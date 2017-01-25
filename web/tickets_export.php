@@ -1,5 +1,5 @@
 <?php
-/* Copyright (C) 2014-2016  Stephan Kreutzer
+/* Copyright (C) 2014-2017  Stephan Kreutzer
  *
  * This file is part of ticket system for refugee-it.de.
  *
@@ -37,9 +37,14 @@ echo "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n".
      "    \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">\n".
      "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"".getCurrentLanguage()."\" lang=\"".getCurrentLanguage()."\">\n".
      "    <head>\n".
-     "        <title>".LANG_PAGETITLE."</title>\n".
-     "        <meta http-equiv=\"expires\" content=\"1296000\"/>\n".
      "        <meta http-equiv=\"content-type\" content=\"application/xhtml+xml; charset=UTF-8\"/>\n".
+     "        <title>".LANG_PAGETITLE."</title>\n".
+     "        <style type=\"text/css\" media=\"print\">\n".
+     "          .link_as_text {\n".
+     "            text-decoration: none;\n".
+     "            color: initial;\n".
+     "          }\n".
+     "        </style>\n".
      "    </head>\n".
      "    <body>\n".
      "        <div>\n";
@@ -67,7 +72,7 @@ if (is_array($tickets) === true)
             }
 
             $ticketsHTML .= "              <tr>\n".
-                            "                <td>".htmlspecialchars($ticket['title'], ENT_COMPAT | ENT_HTML401, "UTF-8")."</td>\n".
+                            "                <td><a href=\"ticket_view.php?id=".htmlspecialchars($ticket['id'], ENT_COMPAT | ENT_HTML401, "UTF-8")."\" class=\"link_as_text\">".htmlspecialchars($ticket['title'], ENT_COMPAT | ENT_HTML401, "UTF-8")."</a></td>\n".
                             "                <td>".htmlspecialchars($ticket['description'], ENT_COMPAT | ENT_HTML401, "UTF-8")."</td>\n".
                             "              </tr>\n";
         }
