@@ -1,5 +1,5 @@
 <?php
-/* Copyright (C) 2014-2016  Stephan Kreutzer
+/* Copyright (C) 2014-2017  Stephan Kreutzer
  *
  * This file is part of ticket system for refugee-it.de.
  *
@@ -168,6 +168,11 @@ if (isset($_POST['upload']) === true)
     if ($success === true)
     {
         $result = AttachUpload($ticket['id'], $_FILES['file']['name'], $internalName);
+
+        if (is_array($result) !== true)
+        {
+            $success = false;
+        }
     }
 
     if ($success === true)
@@ -176,6 +181,12 @@ if (isset($_POST['upload']) === true)
 
         echo "            <p>\n".
              "              <span class=\"success\">".LANG_UPLOAD_SUCCESS."</span>\n".
+             "            </p>\n";
+    }
+    else
+    {
+        echo "            <p>\n".
+             "              <span class=\"success\">".LANG_UPLOAD_ERROR."</span>\n".
              "            </p>\n";
     }
 }
