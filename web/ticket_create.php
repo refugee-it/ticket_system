@@ -24,9 +24,6 @@
 
 
 
-session_start();
-
-
 require_once("./libraries/languagelib.inc.php");
 require_once(getLanguageFile("ticket_create"));
 require_once("./language_selector.inc.php");

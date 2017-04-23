@@ -23,10 +23,6 @@
 
 
 
-session_start();
-
-
-
 require_once("./libraries/languagelib.inc.php");
 require_once(getLanguageFile("tickets_export"));
 require_once("./libraries/ticket_management.inc.php");

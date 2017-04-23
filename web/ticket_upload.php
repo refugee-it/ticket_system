@@ -27,8 +27,6 @@
 
 
 
-session_start();
-
 $ticketHandle = null;
 
 if (isset($_GET['handle']) === true)

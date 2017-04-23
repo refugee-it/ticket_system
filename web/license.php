@@ -24,8 +24,6 @@
 
 
 
-session_start();
-
 require_once("./libraries/languagelib.inc.php");
 require_once(getLanguageFile("license"));
 

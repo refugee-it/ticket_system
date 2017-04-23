@@ -50,6 +50,17 @@ if (isset($_POST['logout']) === true)
     }
 }
 
+$isLoggedIn = false;
+
+if (isset($_SESSION['user_id']) === true &&
+    isset($_SESSION['instance_path']) === true)
+{
+    if (dirname(__FILE__) === $_SESSION['instance_path'])
+    {
+        $isLoggedIn = true;
+    }
+}
+
 
 
 require_once("./libraries/languagelib.inc.php");
@@ -76,7 +87,8 @@ echo "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n".
 
 $whichTickets = null;
 
-if (isset($_SESSION['user_id']) === true)
+
+if ($isLoggedIn === true)
 {
     $whichTickets = $_SESSION['user_id'];
 }
@@ -87,14 +99,14 @@ if (is_array($tickets) === true)
 {
     foreach ($tickets as $ticket)
     {
-        if (isset($_SESSION['user_id']) === true)
+        if ($isLoggedIn === true)
         {
             if ((int)$ticket['status'] === TICKET_STATUS_PUBLIC ||
                 (int)$ticket['status'] === TICKET_STATUS_NOT_PUBLIC)
             {
                 echo "            <div>\n".
-                    "              <a href=\"ticket_view.php?id=".htmlspecialchars($ticket['id'], ENT_COMPAT | ENT_HTML401, "UTF-8")."\">".htmlspecialchars($ticket['title'], ENT_COMPAT | ENT_HTML401, "UTF-8")."</a>\n".
-                    "            </div>\n";
+                     "              <a href=\"ticket_view.php?id=".htmlspecialchars($ticket['id'], ENT_COMPAT | ENT_HTML401, "UTF-8")."\">".htmlspecialchars($ticket['title'], ENT_COMPAT | ENT_HTML401, "UTF-8")."</a>\n".
+                     "            </div>\n";
             }
         }
         else
@@ -109,7 +121,7 @@ if (is_array($tickets) === true)
     }
 }
 
-if (isset($_SESSION['user_id']) === true)
+if ($isLoggedIn === true)
 {
     echo "            <form action=\"tickets_list.php\" method=\"post\">\n".
         "              <fieldset>\n".

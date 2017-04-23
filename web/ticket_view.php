@@ -1,5 +1,5 @@
 <?php
-/* Copyright (C) 2014-2016  Stephan Kreutzer
+/* Copyright (C) 2014-2017  Stephan Kreutzer
  *
  * This file is part of ticket system for refugee-it.de.
  *
@@ -25,6 +25,11 @@
 
 
 session_start();
+
+if (isset($_SESSION['user_id']) === true)
+{
+    require_once("./libraries/session.inc.php");
+}
 
 $id = null;
 
